@@ -23,6 +23,7 @@ import {
     imgSrcArrAtom,
     gameRunningAtom,
     predictionAtom,
+    predictionConfidencesAtom,
 } from "../GlobalState";
 import { useAtom } from "jotai";
 import { data, train } from "@tensorflow/tfjs";
@@ -64,6 +65,7 @@ export default function MLTrain({ webcamRef }) {
     const [hiddenUnits, setHiddenUnits] = useAtom(hiddenUnitsAtom);
     const [isRunning] = useAtom(gameRunningAtom);
     const [, setPredictionDirection] = useAtom(predictionAtom);
+    const [, setPredictionConfidences] = useAtom(predictionConfidencesAtom);
 
     // ---- Model Training ----
     const [model, setModel] = useAtom(modelAtom);
@@ -91,9 +93,9 @@ export default function MLTrain({ webcamRef }) {
     // Loop to predict direction
     async function runPredictionLoop() {
         while (isRunningRef.current) {
-            setPredictionDirection(
-                await predictDirection(webcamRef, truncatedMobileNet, model)
-            );
+            const {direction, directionConfidences } = await predictDirection(webcamRef, truncatedMobileNet, model);
+            setPredictionDirection(direction);
+            setPredictionConfidences(directionConfidences);
             await new Promise((resolve) => setTimeout(resolve, 250));
         }
     }
@@ -109,7 +111,7 @@ export default function MLTrain({ webcamRef }) {
 
     // Train the model when called
     async function trainModel() {
-        setTrainingProgress("Stop");
+        setTrainingProgress(0);
         const dataset = await processImages(imgSrcArr, truncatedMobileNet);
         const model = await buildModel(truncatedMobileNet,
             setLossVal,
@@ -142,7 +144,7 @@ export default function MLTrain({ webcamRef }) {
                         trainingProgress == -1? trainModel() : stopTrain();
                     }}
                 >
-                    {trainingProgress == -1 ? "Train" : lossVal? "Stop": 'Loading...'}
+                    {trainingProgress == -1 ? "Train" : lossVal? "Stop": "Loading..."}
                 </Button>
                 <LinearProgress
                     variant="determinate"
