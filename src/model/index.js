@@ -65,6 +65,42 @@ export async function processImages(imgSrcArr, truncatedMobileNet) {
   return { xs, ys };
 }
 
+export async function processImagesForUMAP(imgSrcArr, truncatedMobileNet) {
+  let embeddingsList = [];
+  let labelsList = [];
+
+  await Promise.all(
+    imgSrcArr.map(async (image) => {
+      const imgTensor = await base64ToTensor(image.src);
+      const embeddings = truncatedMobileNet.predict(imgTensor);
+
+      let labelNum;
+      switch (image.label) {
+        case "up":
+          labelNum = 0;
+          break;
+        case "down":
+          labelNum = 1;
+          break;
+        case "left":
+          labelNum = 2;
+          break;
+        case "right":
+          labelNum = 3;
+          break;
+      }
+
+      embeddingsList.push(Array.from(embeddings.dataSync())); //
+      labelsList.push(labelNum);
+
+      console.log("UMAP Embeddings in UMAPVisualization:", embeddings);
+      console.log("UMAP Labels in UMAPVisualization:", labelsList);
+    })
+  );
+
+  return { embeddingsList, labelsList };
+}
+
 export async function buildModel(
   truncatedMobileNet,
   setLoss,
