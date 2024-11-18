@@ -1,5 +1,9 @@
 import Webcam from "react-webcam";
+<<<<<<< HEAD
 import { Grid, Button, Box, CircularProgress, Typography } from "@mui/material";
+=======
+import { Grid, Button, Box } from "@mui/material";
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 import {
     ArrowUpward,
     ArrowDownward,
@@ -14,8 +18,11 @@ import {
     batchArrayAtom,
     batchSizeAtom,
     gameRunningAtom,
+<<<<<<< HEAD
     predictionAtom,
     predictionConfidencesAtom,
+=======
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 } from "../GlobalState";
 
 const DIRECTIONS = {
@@ -25,6 +32,14 @@ const DIRECTIONS = {
     right: <ArrowForward />,
 };
 
+<<<<<<< HEAD
+=======
+
+import React from "react";
+import { processImages } from "../model/index";
+
+
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 export default function DataCollection({ webcamRef }) {
     const [isCameraOn, setIsCameraOn] = useState(false);
 
@@ -34,8 +49,16 @@ export default function DataCollection({ webcamRef }) {
     // ---- Configurations ----
     const [, setBatchSize] = useAtom(batchSizeAtom);
     const [gameRunning] = useAtom(gameRunningAtom);
+<<<<<<< HEAD
     const [predictionDirection] = useAtom(predictionAtom);
     const [predictionConfidences] = useAtom(predictionConfidencesAtom);
+=======
+
+    const handleProcessData = async () => {
+        const { xs, ys, umapEmbeddings } = await processImages(imgSrcArr, truncatedMobileNet);
+        console.log("Embeddings generated for UMAP visualization:", umapEmbeddings);
+    };
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 
     // ---- UI Display ----
 
@@ -85,7 +108,11 @@ export default function DataCollection({ webcamRef }) {
                 justifyContent="center"
                 flexDirection="column"
             >
+<<<<<<< HEAD
                 <Box textAlign="center"> {/* "STOP CAMERA" button */}
+=======
+                <Box textAlign="center">
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                     <Button
                         variant="contained"
                         onClick={() => setIsCameraOn(!isCameraOn)}
@@ -95,7 +122,11 @@ export default function DataCollection({ webcamRef }) {
                         {isCameraOn ? "Stop" : "Start"} Camera
                     </Button>
                 </Box>
+<<<<<<< HEAD
                 <Box sx={{ marginTop: 1 }}>  {/* live camera feed */}
+=======
+                <Box sx={{ marginTop: 1 }}>
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                     {isCameraOn ? (
                         <Webcam
                             mirrored
@@ -115,7 +146,11 @@ export default function DataCollection({ webcamRef }) {
                 </Box>
             </Grid>
 
+<<<<<<< HEAD
             {Object.keys(DIRECTIONS).map((directionKey, index) => { // array of "ADD TO" direction buttons and preview images
+=======
+            {Object.keys(DIRECTIONS).map((directionKey) => {
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                 return (
                     <OneDirection
                         key={directionKey}
@@ -123,8 +158,11 @@ export default function DataCollection({ webcamRef }) {
                         directionIcon={DIRECTIONS[directionKey]}
                         onCapture={capture(directionKey)}
                         dirImgSrcArr={imgSrcArr.filter((d) => d.label == directionKey)}
+<<<<<<< HEAD
                         isPrediction={index === predictionDirection ?? false}
                         confidence={predictionConfidences?.[index] ?? 0.0}
+=======
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                     />
                 );
             })}
@@ -132,6 +170,7 @@ export default function DataCollection({ webcamRef }) {
     );
 }
 
+<<<<<<< HEAD
 const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPrediction, confidence }) => {
     return (
         <Grid item xs={3}>
@@ -141,6 +180,14 @@ const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPred
             <Box textAlign="center">
                 <Button
                     variant={isPrediction ? "contained" : "outlined"}
+=======
+const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled }) => {
+    return (
+        <Grid item xs={3}>
+            <Box textAlign="center">
+                <Button
+                    variant="outlined"
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                     endIcon={directionIcon}
                     onClick={onCapture}
                     disabled={disabled}
@@ -161,6 +208,7 @@ const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPred
         </Grid>
     );
 };
+<<<<<<< HEAD
 
 const CircularProgressWithLabel = ({ value }) => {
   return (
@@ -190,3 +238,5 @@ const CircularProgressWithLabel = ({ value }) => {
     </Box>
   );
 }
+=======
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)

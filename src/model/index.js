@@ -2,6 +2,32 @@ import * as tf from "@tensorflow/tfjs";
 import { getDefaultStore } from "jotai";
 import { stopTrainingAtom, trainingProgressAtom } from "../GlobalState";
 
+<<<<<<< HEAD
+=======
+import { UMAP } from "umap-js";
+
+export async function generateUMAPEmbeddings(embeddings) {
+  const umap = new UMAP({ nNeighbors: 15, minDist: 0.1, nComponents: 2 });
+  return umap.fit(embeddings);
+}
+
+export function calculateL2Distance(a, b) {
+  return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
+}
+
+export function findSimilarAndCounterfactual(embeddings, currentIndex) {
+  const distances = embeddings.map((emb) => calculateL2Distance(emb, embeddings[currentIndex]));
+  const sorted = distances.map((d, i) => ({ d, i })).sort((a, b) => a.d - b.d);
+
+  return {
+    similar: sorted.slice(1, 4).map(({ i }) => i),
+    counterfactual: sorted.slice(-3).map(({ i }) => i),
+  };
+}
+
+
+
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 export async function loadTruncatedMobileNet() {
   const mobilenet = await tf.loadLayersModel(
     "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json"
@@ -133,6 +159,7 @@ export async function buildModel(
   return model;
 }
 
+<<<<<<< HEAD
 export async function predictWithConfidences(truncatedMobileNet, model, img) {
   const embeddings = truncatedMobileNet.predict(img);
   const predictions = await model.predict(embeddings); // a tensor
@@ -140,12 +167,21 @@ export async function predictWithConfidences(truncatedMobileNet, model, img) {
   const classId = (await predictedClass.data())[0];
   const confidences = await predictions.data(); // array of confidences
   return { classId, confidences };
+=======
+export async function predict(truncatedMobileNet, model, img) {
+  const embeddings = truncatedMobileNet.predict(img);
+  const predictions = await model.predict(embeddings);
+  const predictedClass = predictions.as1D().argMax();
+  const classId = (await predictedClass.data())[0];
+  return classId;
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 }
 
 export async function predictDirection(webcamRef, truncatedMobileNet, model) {
   const newImageSrc = webcamRef.current.getScreenshot();
   if (newImageSrc) {
     const imgTensor = await base64ToTensor(newImageSrc);
+<<<<<<< HEAD
     const {classId, confidences } = await predictWithConfidences(truncatedMobileNet, model, imgTensor);
 
     // reorder the classes to [up, down, left, right] for parity with other code
@@ -154,6 +190,22 @@ export async function predictDirection(webcamRef, truncatedMobileNet, model) {
     const directionConfidences = directionMap.map((_, idx) => confidences[directionMap.indexOf(idx)]);
 
     return { direction, directionConfidences };
+=======
+    const prediction = await predict(truncatedMobileNet, model, imgTensor);
+
+    switch (prediction) {
+      case 0:
+        return 1;
+      case 1:
+        return 3;
+      case 2:
+        return 2;
+      case 3:
+        return 0;
+      default:
+        return -1;
+    }
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
   }
 }
 

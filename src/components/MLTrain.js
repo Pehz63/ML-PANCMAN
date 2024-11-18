@@ -23,7 +23,10 @@ import {
     imgSrcArrAtom,
     gameRunningAtom,
     predictionAtom,
+<<<<<<< HEAD
     predictionConfidencesAtom,
+=======
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 } from "../GlobalState";
 import { useAtom } from "jotai";
 import { data, train } from "@tensorflow/tfjs";
@@ -65,7 +68,10 @@ export default function MLTrain({ webcamRef }) {
     const [hiddenUnits, setHiddenUnits] = useAtom(hiddenUnitsAtom);
     const [isRunning] = useAtom(gameRunningAtom);
     const [, setPredictionDirection] = useAtom(predictionAtom);
+<<<<<<< HEAD
     const [, setPredictionConfidences] = useAtom(predictionConfidencesAtom);
+=======
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 
     // ---- Model Training ----
     const [model, setModel] = useAtom(modelAtom);
@@ -93,9 +99,15 @@ export default function MLTrain({ webcamRef }) {
     // Loop to predict direction
     async function runPredictionLoop() {
         while (isRunningRef.current) {
+<<<<<<< HEAD
             const {direction, directionConfidences } = await predictDirection(webcamRef, truncatedMobileNet, model);
             setPredictionDirection(direction);
             setPredictionConfidences(directionConfidences);
+=======
+            setPredictionDirection(
+                await predictDirection(webcamRef, truncatedMobileNet, model)
+            );
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
             await new Promise((resolve) => setTimeout(resolve, 250));
         }
     }
@@ -111,7 +123,11 @@ export default function MLTrain({ webcamRef }) {
 
     // Train the model when called
     async function trainModel() {
+<<<<<<< HEAD
         setTrainingProgress(0);
+=======
+        setTrainingProgress("Stop");
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
         const dataset = await processImages(imgSrcArr, truncatedMobileNet);
         const model = await buildModel(truncatedMobileNet,
             setLossVal,
@@ -144,7 +160,11 @@ export default function MLTrain({ webcamRef }) {
                         trainingProgress == -1? trainModel() : stopTrain();
                     }}
                 >
+<<<<<<< HEAD
                     {trainingProgress == -1 ? "Train" : lossVal? "Stop": "Loading..."}
+=======
+                    {trainingProgress == -1 ? "Train" : lossVal? "Stop": 'Loading...'}
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                 </Button>
                 <LinearProgress
                     variant="determinate"

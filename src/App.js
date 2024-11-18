@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React from "react";
+=======
+import React, { useState } from "react";
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
 import PacMan from "./components/PacMan";
 import MLTrain from "./components/MLTrain";
 import DataCollection from "./components/DataCollection";
@@ -13,10 +17,34 @@ import {
     Paper,
 } from "@mui/material";
 
+<<<<<<< HEAD
 export default function App() {
     const webcamRef = React.useRef(null);
 
     return (
+=======
+
+
+import UMAPVisualization from "./components/UMAPVisualization";
+import { truncatedMobileNet, model } from "./model/index";
+
+import { useAtom } from "jotai";
+
+
+const ParentComponent = () => {
+    const [imgSrcArr] = useAtom(imgSrcArrAtom); // Access the current images array
+};
+
+
+
+export default function App() {
+    const webcamRef = React.useRef(null);
+    const [embeddings, setEmbeddings] = useState([]);
+    const [labels, setLabels] = useState([]);
+
+    return (
+        
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <AppBar position="absolute">
@@ -73,6 +101,12 @@ export default function App() {
                             <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                                 <PacMan />
                             </Paper>
+<<<<<<< HEAD
+=======
+                            <h1>Gesture Recognition with UMAP</h1>
+                            
+                            <UMAPVisualization embeddings={embeddings} labels={labels} /> 
+>>>>>>> d12a36d (Added updated code for UMAP_try branch)
                         </Grid>
                     </Grid>
                 </Container>
