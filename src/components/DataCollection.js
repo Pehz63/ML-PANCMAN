@@ -1,5 +1,5 @@
 import Webcam from "react-webcam";
-import { Grid, Button, Box, CircularProgress } from "@mui/material";
+import { Grid, Button, Box, CircularProgress, Typography } from "@mui/material";
 import {
     ArrowUpward,
     ArrowDownward,
@@ -136,7 +136,7 @@ const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPred
     return (
         <Grid item xs={3}>
             <Box textAlign="center">
-                <CircularProgress variant="determinate" value={confidence*100} />
+                <CircularProgressWithLabel value={confidence*100} />
             </Box>
             <Box textAlign="center">
                 <Button
@@ -161,3 +161,32 @@ const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPred
         </Grid>
     );
 };
+
+const CircularProgressWithLabel = ({ value }) => {
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'inline-flex',
+      }}
+    >
+      <CircularProgress variant="determinate" value={value} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
