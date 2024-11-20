@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import React, { useState } from "react";
 import { dummyEmbeddings } from "./UMAPVisualization";
 import UMAPVisualization from "./UMAPVisualization";
-import { Box, Grid } from "@mui/material";
+import { Typography, Box, Grid } from "@mui/material";
 
 
 
@@ -35,84 +35,84 @@ const ConfidenceHeatmap = ({ confidenceData }) => {
     );
 };
 
-/*export default function PacMan() {
-    const [isRunning, setIsRuning] = useAtom(gameRunningAtom);
-    const [predictionDirection] = useAtom(predictionAtom);
+// export default function PacMan() {
+//     const [isRunning, setIsRuning] = useAtom(gameRunningAtom);
+//     const [predictionDirection] = useAtom(predictionAtom);
 
-    const pacManProps = {
-        gridSize: 17,
-        animate: process.env.NODE_ENV !== "development",
-        locale: "pt",
-        onEnd: () => {
-            console.log("onEnd");
-        },
-    };
+//     const pacManProps = {
+//         gridSize: 17,
+//         animate: process.env.NODE_ENV !== "development",
+//         locale: "pt",
+//         onEnd: () => {
+//             console.log("onEnd");
+//         },
+//     };
 
-    return (
-        <>
-            <PacmanCovid
-                {...pacManProps}
-                isRunning={isRunning}
-                setIsRuning={setIsRuning}
-                predictions={predictionDirection}
-            />
-            {!isRunning && (
-                <Button variant="contained" onClick={() => setIsRuning(!isRunning)}>
-                    {" "}
-                    Start
-                </Button>
-            )}
-        </>
-    );
-} */
+//     return (
+//         <>
+//             <PacmanCovid
+//                 {...pacManProps}
+//                 isRunning={isRunning}
+//                 setIsRuning={setIsRuning}
+//                 predictions={predictionDirection}
+//             />
+//             {!isRunning && (
+//                 <Button variant="contained" onClick={() => setIsRuning(!isRunning)}>
+//                     {" "}
+//                     Start
+//                 </Button>
+//             )}
+//         </>
+//     );
+// } */
+
+//  export default function PacMan() {
+//     const [isRunning, setIsRuning] = useAtom(gameRunningAtom); // Game running state
+//     const [predictionDirection] = useAtom(predictionAtom); // Predictions
+//     const [embeddings] = useState(dummyEmbeddings); // Dummy embeddings for UMAP visualization
+
+//     const pacManProps = {
+//         gridSize: 17,
+//         animate: process.env.NODE_ENV !== "development",
+//         locale: "pt",
+//         onEnd: () => {
+//             console.log("onEnd");
+//         },
+//     };
+
+//     return (
+//         <Grid container spacing={2}>
+//             {/* Game Section */}
+//             <Grid item xs={6}>
+//                 <Box textAlign="center" border={1}>
+//                     <PacmanCovid
+//                         {...pacManProps}
+//                         isRunning={isRunning}
+//                         setIsRuning={setIsRuning}
+//                         predictions={predictionDirection}
+//                     />
+//                     {!isRunning && (
+//                         <Button
+//                             variant="contained"
+//                             onClick={() => setIsRuning(!isRunning)}
+//                             style={{ marginTop: "10px" }}
+//                         >
+//                             Start
+//                         </Button>
+//                     )}
+//                 </Box>
+//             </Grid>
+
+//              {/* UMAP Visualization Section  */}
+//             <Grid item xs={6}>
+//                 <UMAPVisualization embeddings={embeddings} />
+//             </Grid>
+//         </Grid>
+//     );
+// } 
+
 
 export default function PacMan() {
-    const [isRunning, setIsRuning] = useAtom(gameRunningAtom); // Game running state
-    const [predictionDirection] = useAtom(predictionAtom); // Predictions
-    const [embeddings] = useState(dummyEmbeddings); // Dummy embeddings for UMAP visualization
-
-    const pacManProps = {
-        gridSize: 17,
-        animate: process.env.NODE_ENV !== "development",
-        locale: "pt",
-        onEnd: () => {
-            console.log("onEnd");
-        },
-    };
-
-    return (
-        <Grid container spacing={2}>
-            {/* Game Section */}
-            <Grid item xs={6}>
-                <Box textAlign="center" border={1}>
-                    <PacmanCovid
-                        {...pacManProps}
-                        isRunning={isRunning}
-                        setIsRuning={setIsRuning}
-                        predictions={predictionDirection}
-                    />
-                    {!isRunning && (
-                        <Button
-                            variant="contained"
-                            onClick={() => setIsRuning(!isRunning)}
-                            style={{ marginTop: "10px" }}
-                        >
-                            Start
-                        </Button>
-                    )}
-                </Box>
-            </Grid>
-
-             {/* UMAP Visualization Section  */}
-            <Grid item xs={6}>
-                <UMAPVisualization embeddings={embeddings} />
-            </Grid>
-        </Grid>
-    );
-} 
-
-
-/*export default function PacMan() {
     const [isRunning, setIsRuning] = useAtom(gameRunningAtom); // Game running state
     const [predictionDirection] = useAtom(predictionAtom); // Predictions
     const [embeddings] = useState(dummyEmbeddings); // Dummy embeddings for UMAP visualization
@@ -156,4 +156,4 @@ export default function PacMan() {
             </Box>
         </Box>
     );
-} */
+} 
