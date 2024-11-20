@@ -61,17 +61,14 @@ export async function processImages(imgSrcArr, truncatedMobileNet) {
       }
     })
   );
-
+console.log("ProcessImages function has been accessed");
   return { xs, ys };
 }
 
 export async function processImagesForUMAP(imgSrcArr, truncatedMobileNet) {
-  let embeddingsList = [];
-  let labelsList = [];
-
-  await Promise.all(
+  const results= await Promise.all(
     imgSrcArr.map(async (image) => {
-      const imgTensor = await base64ToTensor(image.src);
+      const imgTensor = base64ToTensor(image.src);
       const embeddings = truncatedMobileNet.predict(imgTensor);
 
       let labelNum;
@@ -90,14 +87,21 @@ export async function processImagesForUMAP(imgSrcArr, truncatedMobileNet) {
           break;
       }
 
-      embeddingsList.push(Array.from(embeddings.dataSync())); //
-      labelsList.push(labelNum);
+      return{
+        embeddings: Array.from(embeddings.dataSync()),
+        label: labelNum
+      };
 
-      console.log("UMAP Embeddings in UMAPVisualization:", embeddings);
-      console.log("UMAP Labels in UMAPVisualization:", labelsList);
+
+
     })
   );
+  const embeddingsList=results.map((result)=>result.embeddings);
+  const labelsList=results.map((result)=>result.label);
 
+  console.log("UMAP Embeddings in UMAPVisualization:", embeddings);
+  console.log("UMAP Labels in UMAPVisualization:", labelsList);
+  console.log("UMAP images function accessed")
   return { embeddingsList, labelsList };
 }
 

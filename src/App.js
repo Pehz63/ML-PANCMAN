@@ -78,12 +78,6 @@ export default function App() {
                                         <PacMan />
                                     </Paper>    
                                 </Grid>
-
-                                <Grid item xs={6}>
-                                    <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                                        <UMAPWrapper />
-                                    </Paper>
-                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

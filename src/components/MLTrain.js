@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import { buildModel, processImages, predictDirection } from "../model";
+import UMAPWrapper from "./UMAPWrapper";
+
 import {
     batchArrayAtom,
     trainingProgressAtom,
@@ -73,6 +75,7 @@ export default function MLTrain({ webcamRef }) {
     // ---- UI Display ----
     const [lossVal, setLossVal] = useAtom(lossAtom);
     const [trainingProgress, setTrainingProgress] = useAtom(trainingProgressAtom);
+    const [showUMAP, setShowUMAP] = useState(false);
 
 
     const [batchSize, setBatchSize] = useAtom(batchSizeAtom);
@@ -119,6 +122,7 @@ export default function MLTrain({ webcamRef }) {
             epochs,
             learningRate)
         setModel(model);
+        setShowUMAP(true);
     }
 
     const stopTrain = () => {
@@ -199,8 +203,26 @@ export default function MLTrain({ webcamRef }) {
     );
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            {imgSrcArr.length === 0 ? EmptyDatasetDisaply : ReguarlDisplay}
-        </Suspense>
+
+                <Suspense fallback={<div>Loading...</div>}>
+                {imgSrcArr.length === 0 ? (
+                    EmptyDatasetDisaply
+                ) : (
+                    <div>
+                        {ReguarlDisplay}
+                        {showUMAP && (
+                            <div style={{ marginTop: "20px" }}>
+                                <Typography variant="h6">
+                                    UMAP Visualization
+                                </Typography>
+                                <UMAPWrapper
+                                    imgSrcArr={imgSrcArr}
+                                    truncatedMobileNet={truncatedMobileNet}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+            </Suspense>
     );
 }
