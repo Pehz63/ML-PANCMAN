@@ -68,7 +68,7 @@ console.log("ProcessImages function has been accessed");
 export async function processImagesForUMAP(imgSrcArr, truncatedMobileNet) {
   const results= await Promise.all(
     imgSrcArr.map(async (image) => {
-      const imgTensor = base64ToTensor(image.src);
+      const imgTensor =await base64ToTensor(image.src);
       const embeddings = truncatedMobileNet.predict(imgTensor);
 
       let labelNum;
@@ -99,8 +99,6 @@ export async function processImagesForUMAP(imgSrcArr, truncatedMobileNet) {
   const embeddingsList=results.map((result)=>result.embeddings);
   const labelsList=results.map((result)=>result.label);
 
-  console.log("UMAP Embeddings in UMAPVisualization:", embeddings);
-  console.log("UMAP Labels in UMAPVisualization:", labelsList);
   console.log("UMAP images function accessed")
   return { embeddingsList, labelsList };
 }
