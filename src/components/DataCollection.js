@@ -1,5 +1,5 @@
 import Webcam from "react-webcam";
-import { Grid, Button, Box } from "@mui/material";
+import { Grid, Button, Box, CircularProgress, Typography } from "@mui/material";
 import {
     ArrowUpward,
     ArrowDownward,
@@ -14,6 +14,8 @@ import {
     batchArrayAtom,
     batchSizeAtom,
     gameRunningAtom,
+    predictionAtom,
+    predictionConfidencesAtom,
 } from "../GlobalState";
 
 const DIRECTIONS = {
@@ -32,6 +34,8 @@ export default function DataCollection({ webcamRef }) {
     // ---- Configurations ----
     const [, setBatchSize] = useAtom(batchSizeAtom);
     const [gameRunning] = useAtom(gameRunningAtom);
+    const [predictionDirection] = useAtom(predictionAtom);
+    const [predictionConfidences] = useAtom(predictionConfidencesAtom);
 
     // ---- UI Display ----
 
@@ -81,7 +85,7 @@ export default function DataCollection({ webcamRef }) {
                 justifyContent="center"
                 flexDirection="column"
             >
-                <Box textAlign="center">
+                <Box textAlign="center"> {/* "STOP CAMERA" button */}
                     <Button
                         variant="contained"
                         onClick={() => setIsCameraOn(!isCameraOn)}
@@ -91,7 +95,7 @@ export default function DataCollection({ webcamRef }) {
                         {isCameraOn ? "Stop" : "Start"} Camera
                     </Button>
                 </Box>
-                <Box sx={{ marginTop: 1 }}>
+                <Box sx={{ marginTop: 1 }}>  {/* live camera feed */}
                     {isCameraOn ? (
                         <Webcam
                             mirrored
@@ -111,7 +115,7 @@ export default function DataCollection({ webcamRef }) {
                 </Box>
             </Grid>
 
-            {Object.keys(DIRECTIONS).map((directionKey) => {
+            {Object.keys(DIRECTIONS).map((directionKey, index) => { // array of "ADD TO" direction buttons and preview images
                 return (
                     <OneDirection
                         key={directionKey}
@@ -119,6 +123,8 @@ export default function DataCollection({ webcamRef }) {
                         directionIcon={DIRECTIONS[directionKey]}
                         onCapture={capture(directionKey)}
                         dirImgSrcArr={imgSrcArr.filter((d) => d.label == directionKey)}
+                        isPrediction={index === predictionDirection ?? false}
+                        confidence={predictionConfidences?.[index] ?? 0.0}
                     />
                 );
             })}
@@ -126,12 +132,15 @@ export default function DataCollection({ webcamRef }) {
     );
 }
 
-const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled }) => {
+const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled, isPrediction, confidence }) => {
     return (
         <Grid item xs={3}>
             <Box textAlign="center">
+                <CircularProgressWithLabel value={confidence*100} />
+            </Box>
+            <Box textAlign="center">
                 <Button
-                    variant="outlined"
+                    variant={isPrediction ? "contained" : "outlined"}
                     endIcon={directionIcon}
                     onClick={onCapture}
                     disabled={disabled}
@@ -152,3 +161,32 @@ const OneDirection = ({ directionIcon, onCapture, dirImgSrcArr, disabled }) => {
         </Grid>
     );
 };
+
+const CircularProgressWithLabel = ({ value }) => {
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'inline-flex',
+      }}
+    >
+      <CircularProgress variant="determinate" value={value} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}

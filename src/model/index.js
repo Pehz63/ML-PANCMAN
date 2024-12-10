@@ -171,32 +171,27 @@ export async function buildModel(
   return model;
 }
 
-export async function predict(truncatedMobileNet, model, img) {
+export async function predictWithConfidences(truncatedMobileNet, model, img) {
   const embeddings = truncatedMobileNet.predict(img);
-  const predictions = await model.predict(embeddings);
+  const predictions = await model.predict(embeddings); // a tensor
   const predictedClass = predictions.as1D().argMax();
   const classId = (await predictedClass.data())[0];
-  return classId;
+  const confidences = await predictions.data(); // array of confidences
+  return { classId, confidences };
 }
 
 export async function predictDirection(webcamRef, truncatedMobileNet, model) {
   const newImageSrc = webcamRef.current.getScreenshot();
   if (newImageSrc) {
     const imgTensor = await base64ToTensor(newImageSrc);
-    const prediction = await predict(truncatedMobileNet, model, imgTensor);
+    const {classId, confidences } = await predictWithConfidences(truncatedMobileNet, model, imgTensor);
 
-    switch (prediction) {
-      case 0:
-        return 1;
-      case 1:
-        return 3;
-      case 2:
-        return 2;
-      case 3:
-        return 0;
-      default:
-        return -1;
-    }
+    // reorder the classes to [up, down, left, right] for parity with other code
+    const directionMap = [1, 3, 2, 0];
+    const direction = directionMap[classId] ?? -1;
+    const directionConfidences = directionMap.map((_, idx) => confidences[directionMap.indexOf(idx)]);
+
+    return { direction, directionConfidences };
   }
 }
 
