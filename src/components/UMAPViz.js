@@ -6,8 +6,10 @@ export default function UMAPVisualization({ data, labels }) {
     const width = 450, height = 450, margin = 25;
 
     const [embeddings, setEmbeddings] = useState([]);
-    const [clusterCentroids, setClusterCentroids] = useState({}); // To store cluster centroids
+    const [clusterCentroids, setClusterCentroids] = useState({});
+    const [confidences, setConfidences] = useState([]); // State to store confidence scores
 
+    // Normalize embedding to range [-1, 1]
     const normalizeEmbedding = (embedding) => {
         const xValues = embedding.map(d => d[0]);
         const yValues = embedding.map(d => d[1]);
@@ -22,14 +24,13 @@ export default function UMAPVisualization({ data, labels }) {
             2 * (y - yMin) / (yMax - yMin) - 1
         ]);
     };
-
-    const xScale = d3.scaleLinear().domain([-1, 1]).range([margin, width - margin]);
-    const yScale = d3.scaleLinear().domain([-1, 1]).range([margin, height - margin]);
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-    const computeCentroids = (embedding, labels) => {
-        // Group points by labels and compute the centroids
+    const labdir=["UP","DOWN","LEFT","RIGHT"];
+    // Compute cluster centroids and confidence scores
+    const computeCentroidsAndConfidences = (embedding, labels) => {
         const clusters = {};
+        const confidences = [];
+
+        // Group points by labels
         embedding.forEach(([x, y], i) => {
             const label = labels[i];
             if (!clusters[label]) clusters[label] = [];
@@ -44,8 +45,20 @@ export default function UMAPVisualization({ data, labels }) {
             centroids[label] = [xMean, yMean];
         });
 
-        return centroids;
+        // Compute confidence scores (distance from centroid)
+        embedding.forEach(([x, y], i) => {
+            const label = labels[i];
+            const [cx, cy] = centroids[label];
+            const distance = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+            confidences.push(1 / (1 + distance)); // Convert distance to confidence (inverse relation)
+        });
+
+        return { centroids, confidences };
     };
+
+    const xScale = d3.scaleLinear().domain([-1, 1]).range([margin, width - margin]);
+    const yScale = d3.scaleLinear().domain([-1, 1]).range([margin, height - margin]);
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
     useEffect(() => {
         const computeUMAP = async () => {
@@ -56,11 +69,11 @@ export default function UMAPVisualization({ data, labels }) {
             console.log("Embedding:", embedding); // Log embeddings
 
             const normalized = normalizeEmbedding(embedding);
-            setEmbeddings(normalized);
+            const { centroids, confidences } = computeCentroidsAndConfidences(normalized, labels);
 
-            // Compute cluster centroids
-            const centroids = computeCentroids(normalized, labels);
+            setEmbeddings(normalized);
             setClusterCentroids(centroids);
+            setConfidences(confidences);
         };
         computeUMAP();
     }, [data]);
@@ -75,8 +88,9 @@ export default function UMAPVisualization({ data, labels }) {
                     key={i}
                     cx={xScale(x)}
                     cy={yScale(y)}
-                    r={5}
+                    r={5 * confidences[i]} // Adjust size based on confidence
                     fill={colorScale(labels[i])}
+                    opacity={confidences[i]} // Adjust opacity based on confidence
                 />
             ))}
 
@@ -91,7 +105,7 @@ export default function UMAPVisualization({ data, labels }) {
                     fill="black"
                     textAnchor="middle"
                 >
-                    {label}
+                    {labdir[label]}
                 </text>
             ))}
         </svg>
